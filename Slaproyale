@@ -1,0 +1,106 @@
+local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
+
+local Window = OrionLib:MakeWindow({Name = "Slap royale Kifoot hub", HidePremium = false, SaveConfig = true, ConfigFolder = "OrionTest"})
+
+--[[
+Name = <string> - The name of the UI.
+HidePremium = <bool> - Whether or not the user details shows Premium status or not.
+SaveConfig = <bool> - Toggles the config saving in the UI.
+ConfigFolder = <string> - The name of the folder where the configs are saved.
+IntroEnabled = <bool> - Whether or not to show the intro animation.
+IntroText = <string> - Text to show in the intro animation.
+IntroIcon = <string> - URL to the image you want to use in the intro animation.
+Icon = <string> - URL to the image you want displayed on the window.
+CloseCallback = <function> - Function to execute when the window is closed.
+]]
+
+local Tab = Window:MakeTab({
+	Name = "Main",
+	Icon = "rbxassetid://4483345998",
+	PremiumOnly = false
+})
+
+--[[
+Name = <string> - The name of the tab.
+Icon = <string> - The icon of the tab.
+PremiumOnly = <bool> - Makes the tab accessible to Sirus Premium users only.
+]]
+
+
+local Section = Tab:AddSection({
+	Name = "Section"
+})
+
+--[[
+Name = <string> - The name of the section.
+]]
+
+OrionLib:MakeNotification({
+	Name = "Thanks for using my script",
+	Content = "slap battles",
+	Image = "rbxassetid://4483345998",
+	Time = 5
+})
+
+--[[
+Title = <string> - The title of the notification.
+Content = <string> - The content of the notification.
+Image = <string> - The icon of the notification.
+Time = <number> - The duration of the notfication.
+]]
+
+Tab:AddButton({
+	Name = "Instant Win (Click 10 Times)",
+	Callback = function()
+      		local players = game:GetService("Players")
+local replicatedStorage = game:GetService("ReplicatedStorage")
+local localPlayer = players.LocalPlayer
+local character = localPlayer.Character or localPlayer.CharacterAdded:Wait()
+local missileLauncher = character:FindFirstChild("Missile-Launcher")
+
+if missileLauncher then
+    for _, player in pairs(players:GetPlayers()) do
+        if player ~= localPlayer and player.Character then
+            local args = {
+                [1] = missileLauncher,
+                [2] = player.Character
+            }
+            replicatedStorage.Events.Ability:FireServer(unpack(args))
+        end
+    end
+else
+    warn("Missile-Launcher not found in LocalPlayer's character.")
+end
+  	end    
+})
+
+--[[
+Name = <string> - The name of the button.
+Callback = <function> - The function of the button.
+]]
+
+Tab:AddButton({
+	Name = "Antilag",
+	Callback = function()
+      		-- Get the ReplicatedStorage service
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+-- Find the folder named "Assets" in ReplicatedStorage
+local assetsFolder = ReplicatedStorage:FindFirstChild("Assets")
+
+-- Check if the folder exists
+if assetsFolder and assetsFolder:IsA("Folder") then
+    -- Remove the folder
+    assetsFolder:Destroy()
+    print("Assets folder removed from ReplicatedStorage.")
+else
+    print("Assets folder not found in ReplicatedStorage.")
+end
+
+  	end    
+})
+
+--[[
+Name = <string> - The name of the button.
+Callback = <function> - The function of the button.
+]]
