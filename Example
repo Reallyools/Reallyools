@@ -1,4 +1,5 @@
 getgenv().customScriptText = getgenv().customScriptText or "Your name script"
+print("test")
 local HttpService = game:GetService("HttpService")
 
 function GetIPInfo()
