@@ -1,5 +1,4 @@
---make by Cรกo Mod
---put it in loadstring and add the line getgenv().customScriptText = getgenv().customScriptText or "Your name script"
+getgenv().customScriptText = getgenv().customScriptText or "Your name script"
 local HttpService = game:GetService("HttpService")
 
 function GetIPInfo()
