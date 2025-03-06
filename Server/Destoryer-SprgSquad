@@ -1,0 +1,113 @@
+local Library = loadstring(Game:HttpGet("https://raw.githubusercontent.com/bloodball/-back-ups-for-libs/main/wizard"))()
+
+local PhantomForcesWindow = Library:NewWindow("Server Destroyer")
+
+local KillingCheats = PhantomForcesWindow:NewSection("Void throw")
+KillingCheats:CreateButton("To player to void", function()
+for i, v in pairs(game.Players:GetPlayers()) do
+if v ~= game.Players.LocalPlayer then
+local args = {
+    [1] = "throw",
+    [2] = {
+        ["victim"] = v,
+        ["cf"] = CFrame.new(0.947179794311523, -1000.900514125823975, 0.077839851379395, 0.0011795650934800506, 0.10216949880123138, -0.9947662353515625, -0.05447467043995857, 0.9932964444160461, 0.10195396095514297, 0.9985142946243286, 0.05406931787729263, 0.006737306714057922)
+    }
+}
+
+game:GetService("ReplicatedStorage"):WaitForChild("Events"):WaitForChild("rob_r"):FireServer(unpack(args))
+end
+end
+end)
+
+local KillingCheats = PhantomForcesWindow:NewSection("death cube throw")
+
+KillingCheats:CreateButton("Tp player to cube", function()
+for i, v in pairs(game.Players:GetPlayers()) do
+if v ~= game.Players.LocalPlayer then
+local args = {
+    [1] = "throw",
+    [2] = {
+        ["victim"] = v,
+        ["cf"] = CFrame.new(-271, -7, 1, 0.0011795650934800506, 0.10216949880123138, -0.9947662353515625, -0.05447467043995857, 0.9932964444160461, 0.10195396095514297, 0.9985142946243286, 0.05406931787729263, 0.006737306714057922)
+    }
+}
+
+game:GetService("ReplicatedStorage"):WaitForChild("Events"):WaitForChild("rob_r"):FireServer(unpack(args))
+end
+end
+end)
+
+local KillingCheats = PhantomForcesWindow:NewSection("portal throw")
+
+KillingCheats:CreateButton("Tp player to portal", function()
+for i, v in pairs(game.Players:GetPlayers()) do
+if v ~= game.Players.LocalPlayer then
+local args = {
+    [1] = "throw",
+    [2] = {
+        ["victim"] = v,
+        ["cf"] = CFrame.new(-907.947179794311523, 330.900514125823975, 4.077839851379395, 0.0011795650934800506, 0.10216949880123138, -0.9947662353515625, -0.05447467043995857, 0.9932964444160461, 0.10195396095514297, 0.9985142946243286, 0.05406931787729263, 0.006737306714057922)
+    }
+}
+
+game:GetService("ReplicatedStorage"):WaitForChild("Events"):WaitForChild("rob_r"):FireServer(unpack(args))
+end
+end
+end)
+local KillingCheats = PhantomForcesWindow:NewSection("brazil throw")
+
+KillingCheats:CreateButton("To player to brazil", function()
+for i, v in pairs(game.Players:GetPlayers()) do
+if v ~= game.Players.LocalPlayer then
+local args = {
+    [1] = "throw",
+    [2] = {
+        ["victim"] = v,
+        ["cf"] = CFrame.new(-271, -7, 1, 0.0011795650934800506, 0.10216949880123138, -0.9947662353515625, -0.05447467043995857, 0.9932964444160461, 0.10195396095514297, 0.9985142946243286, 0.05406931787729263, 0.006737306714057922)
+    }
+}
+
+game:GetService("ReplicatedStorage"):WaitForChild("Events"):WaitForChild("rob_r"):FireServer(unpack(args))
+end
+end
+end)
+local KillingCheats = PhantomForcesWindow:NewSection("guide throw")
+
+KillingCheats:CreateButton("To player to guide", function()
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local LocalPlayer = Players.LocalPlayer
+local event = ReplicatedStorage:WaitForChild("Events"):WaitForChild("rob_r")
+
+local playerList = {}
+for _, player in pairs(Players:GetPlayers()) do
+    if player ~= LocalPlayer then
+        table.insert(playerList, player)
+    end
+end
+
+local function shuffleTable(tbl)
+    for i = #tbl, 2, -1 do
+        local j = math.random(1, i)
+        tbl[i], tbl[j] = tbl[j], tbl[i]
+    end
+end
+
+shuffleTable(playerList)
+
+local count = math.min(4, #playerList)
+for i = 1, count do
+    local victim = playerList[i]
+    local args = {
+        [1] = "throw",
+        [2] = {
+            ["victim"] = victim,
+            ["cf"] = CFrame.new(17941.5898, -130.158447, -3556.80981, 
+                               0.7286762, 2.96302556e-08, -0.684858382, 
+                               1.2716411e-08, 1, 5.67948106e-08, 
+                               0.684858382, -5.00939663e-08, 0.7286762)
+        }
+    }
+    event:FireServer(unpack(args))
+end
+end)
