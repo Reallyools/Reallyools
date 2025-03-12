@@ -1,0 +1,170 @@
+local player = game.Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+
+local function getNearestTarget()
+    local character = player.Character
+    if not character then return nil end
+
+    local humanoidRootPart = character:FindFirstChild("HumanoidRootPart")
+    if not humanoidRootPart then return nil end
+
+    local nearestTarget = nil
+    local nearestDistance = math.huge
+
+    -- Check Players
+    for _, otherPlayer in pairs(game.Players:GetPlayers()) do
+        if otherPlayer ~= player and otherPlayer.Character then
+            local otherRoot = otherPlayer.Character:FindFirstChild("HumanoidRootPart")
+            if otherRoot then
+                local distance = (humanoidRootPart.Position - otherRoot.Position).Magnitude
+                if distance < nearestDistance then
+                    nearestDistance = distance
+                    nearestTarget = otherRoot
+                end
+            end
+        end
+    end
+
+    -- Check Weakest Dummy
+    local liveFolder = game.Workspace:FindFirstChild("Live")
+    if liveFolder then
+        for _, dummy in pairs(liveFolder:GetChildren()) do
+            if dummy:IsA("Model") and dummy.Name == "Weakest Dummy" then
+                local dummyRoot = dummy:FindFirstChild("HumanoidRootPart")
+                if dummyRoot then
+                    local distance = (humanoidRootPart.Position - dummyRoot.Position).Magnitude
+                    if distance < nearestDistance then
+                        nearestDistance = distance
+                        nearestTarget = dummyRoot
+                    end
+                end
+            end
+        end
+    end
+
+    return nearestTarget
+end
+
+local function createGUI()
+    if playerGui:FindFirstChild("CustomScreenGui") then
+        playerGui.CustomScreenGui:Destroy()
+    end
+
+    local screenGui = Instance.new("ScreenGui")
+    screenGui.Name = "CustomScreenGui"
+    screenGui.ResetOnSpawn = false
+    screenGui.Parent = playerGui
+
+    -- Move Button (➡️)
+    local button = Instance.new("TextButton")
+    button.Size = UDim2.new(0, 50, 0, 50)
+    button.Position = UDim2.new(0, 20, 0.4, -25)
+    button.BackgroundColor3 = Color3.fromRGB(255, 100, 100)
+    button.Text = "➡️"
+    button.Font = Enum.Font.SourceSansBold
+    button.TextSize = 25
+    button.Parent = screenGui
+    button.ClipsDescendants = true
+    button.AutoButtonColor = true
+    button.Active = true
+    button.Draggable = true
+
+    local uiCorner = Instance.new("UICorner")
+    uiCorner.CornerRadius = UDim.new(1, 0)
+    uiCorner.Parent = button
+
+    local debounce = false
+    local function updateCharacterReferences()
+        local character = player.Character or player.CharacterAdded:Wait()
+        local humanoid = character:WaitForChild("Humanoid")
+        local animator = humanoid:FindFirstChildOfClass("Animator") or humanoid:WaitForChild("Animator")
+        local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+
+        local animation = Instance.new("Animation")
+        animation.AnimationId = "rbxassetid://10480793962"
+        local animationTrack = animator:LoadAnimation(animation)
+
+        button.MouseButton1Click:Connect(function()
+            if debounce then return end
+            debounce = true
+
+            local args = { [1] = { ["Mobile"] = true, ["Goal"] = "LeftClick" } }
+            player.Character.Communicate:FireServer(unpack(args))
+            task.wait(0.1)
+            local args = { [1] = { ["Goal"] = "LeftClickRelease", ["Mobile"] = true } }
+            player.Character.Communicate:FireServer(unpack(args))
+            task.wait(0.13)
+            animationTrack:Play()
+
+            local tweenService = game:GetService("TweenService")
+            local tweenInfo = TweenInfo.new(0.3, Enum.EasingStyle.Circular, Enum.EasingDirection.Out)
+            local goalCFrame = humanoidRootPart.CFrame * CFrame.new(25, 0, 0)
+            local tween = tweenService:Create(humanoidRootPart, tweenInfo, { CFrame = goalCFrame })
+            tween:Play()
+
+            task.wait(2)
+            debounce = false
+        end)
+    end
+
+    -- Dash Button (⬆️)
+    local debounceDash = false
+    local dashButton = Instance.new("TextButton")
+    dashButton.Size = UDim2.new(0, 50, 0, 50)
+    dashButton.Position = UDim2.new(1, -100, 0, -30)
+    dashButton.BackgroundColor3 = Color3.fromRGB(100, 200, 255)
+    dashButton.Text = "⬆️"
+    dashButton.Font = Enum.Font.SourceSansBold
+    dashButton.TextSize = 30
+    dashButton.Parent = screenGui
+    dashButton.ClipsDescendants = true
+    dashButton.AutoButtonColor = true
+    dashButton.Active = true
+    dashButton.Draggable = true
+
+    local dashUiCorner = Instance.new("UICorner")
+    dashUiCorner.CornerRadius = UDim.new(1, 0)
+    dashUiCorner.Parent = dashButton
+
+    dashButton.MouseButton1Click:Connect(function()
+        if debounceDash then return end
+        debounceDash = true
+
+        local character = player.Character
+        if not character then return end
+
+        local humanoidRootPart = character:FindFirstChild("HumanoidRootPart")
+        if not humanoidRootPart then return end
+
+        local nearestTarget = getNearestTarget()
+        if not nearestTarget then
+            debounceDash = false
+            return
+        end
+
+        -- Dash toward the nearest Player or Weakest Dummy
+        local direction = (nearestTarget.Position - humanoidRootPart.Position).unit
+        local forwardDistance = 114 * direction
+        local upwardDistance = Vector3.new(0, 30, 0)
+        local launchVelocity = forwardDistance + upwardDistance
+
+        local bodyVelocity = Instance.new("BodyVelocity")
+        bodyVelocity.MaxForce = Vector3.new(500000, 500000, 500000)
+        bodyVelocity.Velocity = launchVelocity
+        bodyVelocity.Parent = humanoidRootPart
+
+        game:GetService("Debris"):AddItem(bodyVelocity, 0.1)
+
+        wait(1)
+        debounceDash = false
+    end)
+
+    updateCharacterReferences()
+end
+
+player.CharacterAdded:Connect(function()
+    task.wait(0.5)
+    createGUI()
+end)
+
+createGUI()
